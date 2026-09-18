@@ -1,72 +1,61 @@
 # Arnatech SaaS AI Skills & Platform Reference
 
-Repository ini adalah sumber bersama untuk dua kebutuhan:
+This repository serves two purposes:
 
-1. **AI-agent skills dan reference context** yang membantu agen pada platform AI apa pun mengikuti kontrak Arnatech saat merancang, meninjau, atau mengubah layanan.
-2. **Dokumentasi manusia** untuk memahami batas kepemilikan layanan, tenancy, SSO, device, dan pembayaran sebelum membuat keputusan atau implementasi.
+1. **AI agent skills and reference context** for agents that design, review, or change Arnatech services.
+2. **Human documentation** for engineers and product owners making cross-service architecture decisions.
 
-Repository ini tidak menggantikan source code, OpenAPI layanan, ataupun prosedur operasional produksi. Gunakan sebagai kontrak arsitektur lintas layanan yang harus dipenuhi oleh perubahan tersebut.
+It does not replace service source code, OpenAPI specifications, or production operating procedures. Treat it as the cross-service architecture contract that those artifacts must follow.
 
-## Mulai sebagai pembaca dokumentasi
+## Read as human documentation
 
-Untuk perubahan yang melibatkan lebih dari satu layanan, baca [platform contract](arnatech-platform/references/platform-contract.md) terlebih dahulu. Dokumen itu menjelaskan pemilik kapabilitas dan aturan inti berikut:
+For a change that crosses service boundaries, start with the [platform contract](arnatech-platform/references/platform-contract.md). It defines:
 
-- shared-pool tenancy dengan `organization_id` dan `tenant_id`;
-- central SSO berbasis PKCE dan app-local session;
-- device identity untuk kiosk, POS, scanner, atau photobooth;
-- kepemilikan Commerce, File Manager, Payment Router, dan Pulsar;
-- kontrak HTTP dan baseline delivery.
+- shared-pool tenancy using `organization_id` and `tenant_id`;
+- central SSO with PKCE and app-local sessions;
+- device identities for kiosks, POS systems, scanners, and photobooths;
+- ownership boundaries for Commerce, File Manager, Payment Router, and Pulsar;
+- HTTP and deployment conventions.
 
-Untuk QRIS, webhook, rekonsiliasi invoice, atau migrasi event, lanjutkan ke [payment-event contract](arnatech-payment-events/references/event-contract.md). Payment Router menerima webhook provider, Commerce menjadi pemilik status invoice/order/entitlement, dan Pulsar membawa fakta pembayaran yang versioned serta idempoten.
+For QRIS, payment webhooks, invoice reconciliation, or payment-event migration, then read the [payment-event contract](arnatech-payment-events/references/event-contract.md). Payment Router owns provider webhook ingress, Commerce owns invoice/order/entitlement state, and Pulsar carries versioned, idempotently processed payment facts.
 
-### Peta isi
+### Repository map
 
-| Area | Baca untuk memahami | Folder skill AI |
+| Area | Read to understand | AI skill folder |
 | --- | --- | --- |
-| Arsitektur lintas layanan, tenancy, SSO, device | [Platform contract](arnatech-platform/references/platform-contract.md) | `arnatech-platform` |
-| Backend API, worker, integrasi layanan | [Service skill](arnatech-service/SKILL.md) | `arnatech-service` |
-| Web frontend, BFF, SSO, public route | [Web SSO skill](arnatech-web-sso/SKILL.md) | `arnatech-web-sso` |
-| QRIS/Xendit, Commerce, Payment Router, Pulsar | [Payment-event contract](arnatech-payment-events/references/event-contract.md) | `arnatech-payment-events` |
+| Cross-service architecture, tenancy, SSO, devices | [Platform contract](arnatech-platform/references/platform-contract.md) | `arnatech-platform` |
+| Backend APIs, workers, and service integration | [Service skill](arnatech-service/SKILL.md) | `arnatech-service` |
+| Web frontends, BFFs, SSO, and public routes | [Web SSO skill](arnatech-web-sso/SKILL.md) | `arnatech-web-sso` |
+| QRIS/Xendit, Commerce, Payment Router, and Pulsar | [Payment-event contract](arnatech-payment-events/references/event-contract.md) | `arnatech-payment-events` |
 
-### Contoh: photobooth publik
+### Example: a public photobooth
 
-Layar tamu dapat tetap tanpa login, tetapi device photobooth wajib terdaftar dan terikat pada satu organisasi dan tenant. Operator memasangkan device melalui SSO Device Authorization Grant; device hanya memperoleh token untuk API photobooth. Backend photobooth, bukan device atau browser tamu, membuat order Commerce dengan konteks `organization_id`, `tenant_id`, `device_id`, dan event. Lihat [device identities and public terminals](arnatech-platform/references/platform-contract.md#device-identities-and-public-terminals).
+A guest-facing photobooth screen can remain login-free, but the installed device must be registered and assigned to exactly one organization and tenant. An authorized operator pairs the device through the SSO Device Authorization Grant. The device receives access only to the photobooth API; the photobooth backend, rather than the guest browser or device UI, creates Commerce orders with `organization_id`, `tenant_id`, `device_id`, and event context. See [Device identities and public terminals](arnatech-platform/references/platform-contract.md#device-identities-and-public-terminals).
 
-## Pakai dengan platform AI
+## Use with an AI platform
 
-Setiap folder `arnatech-*` adalah skill mandiri: ia memiliki `SKILL.md` sebagai instruksi untuk AI dan, bila diperlukan, `references/` sebagai sumber aturan yang lebih rinci. Platform AI yang mendukung format skill berbasis `SKILL.md` dapat memuat folder-folder tersebut sebagai skill terpisah. Ikuti mekanisme instalasi platform tersebut dan pilih folder yang relevan, bukan root repository sebagai satu skill.
+Every `arnatech-*` directory is an independent Agent Skill. It contains `SKILL.md` with agent instructions and, when required, a `references/` directory with more detailed contracts. AI platforms that support filesystem Agent Skills should register the four directories individually; do not register the repository root as one oversized skill.
 
-Platform yang belum mendukung skill juga tetap dapat memakai repository ini sebagai documentation context. Berikan AI dokumen yang sesuai dengan tugas, lalu instruksikan untuk mematuhinya. Contoh prompt yang platform-netral:
-
-```text
-Gunakan Arnatech SaaS Platform Reference berikut sebagai kontrak wajib.
-Baca platform contract terlebih dahulu, kemudian service skill untuk implementasi backend.
-Jangan mengubah tenancy, SSO, Commerce, File Manager, atau kontrak Pulsar tanpa
-menyatakan dampak dan rencana migrasinya.
-```
-
-Untuk tugas lintas layanan, lampirkan atau tautkan [platform contract](arnatech-platform/references/platform-contract.md). Tambahkan [payment-event contract](arnatech-payment-events/references/event-contract.md) untuk pembayaran. Untuk tugas khusus, gunakan folder skill yang sesuai pada tabel di atas.
-
-### Platform AI yang mendukung skills
-
-Daftarkan masing-masing folder berikut sebagai satu skill sesuai dokumentasi platform AI yang digunakan:
+Platforms without native Skills support can still use this repository as authoritative context. Attach or link the documents relevant to the task and give the agent an explicit instruction such as:
 
 ```text
-arnatech-platform/
-arnatech-service/
-arnatech-web-sso/
-arnatech-payment-events/
+Use the Arnatech SaaS Platform Reference as a mandatory contract.
+Read the platform contract first and then the service skill before implementing backend work.
+Do not change tenancy, SSO, Commerce, File Manager, or Pulsar contracts without
+describing the impact and a migration path.
 ```
 
-Skill dipilih otomatis hanya bila platform mendukung discovery dari deskripsi. Untuk perubahan penting, sebutkan nama skill dan dokumen referensi yang harus dibaca dalam prompt agar perilakunya deterministik.
+For a cross-service task, attach the [platform contract](arnatech-platform/references/platform-contract.md). Add the [payment-event contract](arnatech-payment-events/references/event-contract.md) for payment work, and use the task-specific skill folder from the repository map above.
+
+## Install as AI skills
 
 ### Codex
 
-Codex mendeteksi folder skill yang berisi `SKILL.md`. Gunakan instalasi skill bawaan Codex bila tersedia: panggil `$skill-installer`, lalu minta instalasi skill dari repository ini. Setelah terpasang, buka session baru atau restart Codex bila skill belum terlihat.
+Codex discovers skills with `SKILL.md`. When available, invoke `$skill-installer` and ask it to install skills from this repository. Start a new session, or restart Codex if the skills do not appear.
 
-Alternatif manual adalah menyalin setiap folder `arnatech-*` langsung ke user skill directory Codex, yaitu `~/.agents/skills`. Jangan menyalin folder repository sebagai satu skill tunggal; setiap folder di bawah ini adalah skill tersendiri.
+For a manual global installation, copy each `arnatech-*` directory directly into Codex's user skill directory, `~/.agents/skills`. Do not copy the repository itself as a single skill.
 
-### Windows PowerShell
+#### Windows PowerShell
 
 ```powershell
 $checkoutPath = Join-Path $env:TEMP 'arna-saas-skills'
@@ -77,7 +66,7 @@ New-Item -ItemType Directory -Force $skillsPath
 Copy-Item -Recurse $checkoutPath\arnatech-* $skillsPath
 ```
 
-### macOS / Linux
+#### macOS / Linux
 
 ```bash
 git clone git@github.com:ardzix/arna-saas-skills.git /tmp/arna-saas-skills
@@ -85,31 +74,65 @@ mkdir -p ~/.agents/skills
 cp -R /tmp/arna-saas-skills/arnatech-* ~/.agents/skills/
 ```
 
-Skill Codex dapat dipilih otomatis dari deskripsi tugasnya, tetapi gunakan invocation eksplisit untuk perubahan penting:
+Use an explicit invocation for important work:
 
 ```text
 $arnatech-platform
-Rancang kontrak tenant dan SSO untuk layanan baru.
+Design the tenant and SSO contract for a new service.
 
 $arnatech-service
-Tambahkan API backend yang memakai tenant context dan Commerce.
+Add a backend API that uses tenant context and Commerce.
 
 $arnatech-web-sso
-Implementasikan dashboard dengan central SSO.
+Implement a dashboard with central SSO.
 
 $arnatech-payment-events
-Rancang alur QRIS dan consumer Pulsar yang idempoten.
+Design a QRIS flow and an idempotent Pulsar consumer.
 ```
 
-Di aplikasi desktop ChatGPT gunakan skill picker (`@`) bila tersedia; di Codex CLI atau ekstensi IDE gunakan `$skill-name` atau `/skills`. Skill memuat instruksi penuh hanya saat dipilih, sehingga referensi tetap ringkas pada session biasa.
+In the ChatGPT desktop app, use the skill picker (`@`) when available. In Codex CLI or the IDE extension, use `$skill-name` or `/skills`. [OpenAI Docs: Build skills](https://learn.chatgpt.com/docs/build-skills)
 
-Panduan lokasi skill, pemanggilan eksplisit, dan instalasi skill dari repository dijelaskan oleh [OpenAI Docs: Build skills](https://learn.chatgpt.com/docs/build-skills).
+### Claude Code
 
-## Prinsip perubahan
+Claude Code uses the same `SKILL.md` folder format. Copy the skill directories to `~/.claude/skills/` for personal use in every project, or to `.claude/skills/` at a project root for a versioned team installation.
 
-- Jangan membuat identity, invoice, entitlement, file storage, atau webhook receiver kedua di layanan konsumen.
-- Jangan mempercayai `organization_id`, `tenant_id`, role, atau status bayar yang datang dari browser, QR publik, header, atau callback provider tanpa verifikasi pada pemilik data.
-- Pertahankan kontrak publik lama selama masa migrasi yang terdokumentasi; versioning dan idempotency wajib untuk event pembayaran.
-- Jangan memasukkan secret, private key, app token personal, atau data produksi ke repository ini.
+```bash
+git clone git@github.com:ardzix/arna-saas-skills.git /tmp/arna-saas-skills
+mkdir -p ~/.claude/skills
+cp -R /tmp/arna-saas-skills/arnatech-* ~/.claude/skills/
+```
 
-Saat mengubah kontrak, perbarui dokumen referensi yang relevan dan skill yang mengarahkan implementasinya dalam commit yang sama.
+Restart Claude Code after installation. Claude discovers skills automatically; name the skill in the prompt when you need to guarantee its use. [Claude Agent Skills](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview)
+
+### claude.ai
+
+For Claude in the browser, upload each skill directory as a separate ZIP file through **Settings → Features → Custom Skills**. Select only the skills that are relevant to the work; do not upload the whole repository as one skill.
+
+Custom Skills in claude.ai are per user. They must be uploaded separately for each Claude surface, including Claude Code and the API. Availability depends on a plan and code-execution configuration that supports Custom Skills. [Claude Agent Skills](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview)
+
+### Google Antigravity
+
+Antigravity uses the same `SKILL.md` format. For project-scoped skills, copy the directories to `<project-root>/.agents/skills/`. For global skills across all workspaces, use `~/.gemini/antigravity/skills/`.
+
+```bash
+git clone git@github.com:ardzix/arna-saas-skills.git /tmp/arna-saas-skills
+mkdir -p .agents/skills
+cp -R /tmp/arna-saas-skills/arnatech-* .agents/skills/
+```
+
+Antigravity can select a skill from its description, or you can explicitly mention the skill name in a task. [Google Antigravity: Agent Skills](https://antigravity.google/docs/ide/skills)
+
+### Other Agent Skills-compatible platforms
+
+This repository follows the open Agent Skills structure: one capability per directory, a `SKILL.md` file with `name` and `description` frontmatter, and optional supporting resources. For another platform that adopts this format, follow that platform's instructions for its global or project skill directory and copy the four `arnatech-*` directories directly into it.
+
+If a platform does not provide a Skills feature, use the repository as reference documentation instead. Attach the [platform contract](arnatech-platform/references/platform-contract.md) and any task-specific contract to the agent context. Do not assume that a skill is active until the platform displays or confirms that it discovered the skill.
+
+## Change principles
+
+- Do not create a second identity store, invoice system, entitlement engine, file store, or payment webhook receiver inside a consumer service.
+- Do not trust `organization_id`, `tenant_id`, roles, or payment state received from a browser, public QR code, header, or provider callback without verifying it with the authoritative owner.
+- Preserve live public contracts during a documented migration; payment event versioning and idempotency are mandatory.
+- Do not commit secrets, private keys, personal app tokens, or production data to this repository.
+
+When a contract changes, update the relevant reference document and the skill that guides its implementation in the same commit.
