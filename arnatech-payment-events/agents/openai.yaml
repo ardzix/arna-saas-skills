@@ -1,0 +1,3 @@
+interface:
+  display_name: "Arnatech Payment Events"
+  short_description: "Build safe Arnatech payment event flows"

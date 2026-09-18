@@ -1,0 +1,3 @@
+interface:
+  display_name: "Arnatech Web Sso"
+  short_description: "Build Arnatech web apps with seamless SSO"
