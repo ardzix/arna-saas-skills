@@ -13,6 +13,7 @@ Treat these as established platform decisions:
 
 - ArnaSite uses shared-pool tenancy. Business data is scoped by `organization_id` and `tenant_id`; Commerce remains organization-scoped.
 - Arna SSO supplies central browser sign-in. Applications use PKCE authorization code flow to obtain an app-local, `HttpOnly` session, so navigation between services does not require another login.
+- Arna SSO also owns registered device identities. A public terminal is backed by a tenant-bound device credential obtained through an approved device-pairing flow; it is not an anonymous service or a long-lived personal app token.
 - SSO, Commerce, File Manager, ArnaSite, Payment Router, and Pulsar own their respective platform capabilities. Do not duplicate them in a consumer service.
 
 When a proposed change alters a product policy—such as entitlement scope, tenant ownership, data retention, or migration cutover—state the concrete alternatives and a recommendation, then ask the user to choose. Security validation and tenant isolation are not optional trade-offs.

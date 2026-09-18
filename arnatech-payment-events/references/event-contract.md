@@ -39,6 +39,8 @@ The target normalized topic is `persistent://public/default/payment.xendit.webho
 
 `organization_id` and `tenant_id` can be absent at ingress because a provider event may not contain them. Commerce resolves them through the invoice and must not trust provider-supplied tenant context.
 
+For a checkout started by a registered device, Commerce persists the verified `organization_id`, `tenant_id`, `device_id`, and event/resource reference on the invoice or order at creation time. The payer may be anonymous, but ownership remains tenant-scoped. These values are internal context resolved by Commerce; they are never accepted as authority from the public device UI or a provider callback.
+
 ## Migration
 
 1. Add normalized-event publication with a stable idempotency key while retaining legacy publication.

@@ -4,7 +4,7 @@
 
 | Capability | Owner | Consumer rule |
 | --- | --- | --- |
-| Identity, organizations, roles, permissions, MFA, passkeys | Arna SSO | Verify its signed tokens; do not create a parallel identity store. |
+| Identity, organizations, roles, permissions, MFA, passkeys, device registrations | Arna SSO | Verify its signed tokens; do not create a parallel identity or device store. |
 | Products, prices, subscriptions, invoices, entitlements | Arna Commerce | Ask for runtime entitlements; do not infer access from a plan label. |
 | Files, metadata, access policy, object storage | Arna File Manager | Store file IDs/stable URLs, not raw object-store credentials. |
 | Tenant, CMS, domains, website context | ArnaSite | Resolve tenant context from trusted host/resource context. |
@@ -34,6 +34,16 @@ Users sign in once at SSO. Apps then redirect to SSO using PKCE authorization co
 This works across `ems.arnatech.id`, `site.arnatech.id`, and `www.bisnisnaikkelas.com`. Do not use a parent-domain JavaScript-readable JWT as the shared session mechanism. The current ArnaSite PKCE bridge is a useful foundation but currently returns token pairs to the browser; treat that as transition code and move the exchange/session write into the application backend/BFF.
 
 All resource services validate RS256 signatures with SSO public keys/JWKS plus expiry, issuer, audience, token type, and identity claims. The Business Hub legacy HMAC/payload-only implementation must not be used in production. Service tokens require narrow scopes and the intended target audience; SSO's legacy hard-coded `storage` service audience must become an allowlisted requested audience.
+
+## Device identities and public terminals
+
+A public visitor screen may have no human login, but its underlying device is authenticated. Arna SSO owns `DeviceRegistration`, including the immutable `organization_id`, `tenant_id`, `device_id`, client/key identifier, scopes, active status, approver, and audit trail. A device has one active organization-and-tenant assignment; changing that assignment requires a new approval by a user authorized for device activation in the target tenant.
+
+Use the OAuth 2.0 Device Authorization Grant for a kiosk, POS, photobooth, scanner, or other device without a suitable browser. The device obtains a short-lived, one-time device code and shows the verification URI as a QR code plus a human-readable code. An operator completes approval in the normal SSO browser session, verifies the displayed device identity and requested tenant/scopes, and explicitly approves or denies it. A manually entered code is an alternative presentation of that same one-time pairing flow; do not copy a personal API token or a durable bearer token into a device.
+
+Issue a short-lived, audience-specific device access token and a rotated, revocable device refresh credential, rather than a permanently long-lived access token. Bind credentials to a device-held key with DPoP or mTLS where the hardware supports it, and retain the key reference in the registration. Device tokens must carry and be checked for `token_type=device`, `device_id`, `organization_id`, `tenant_id`, scope, issuer, expiry, and the intended resource audience. A resource service also verifies the registration is active and that the requested event/resource is assigned to that device. Revocation, replacement, reassignment, and suspicious pairing must be auditable and take effect no later than the short access-token lifetime.
+
+Device access is not backend service access. A photobooth device, for example, is issued only an audience such as `photobooth-api`; its backend uses separately scoped service credentials for Commerce and File Manager. Never expose a device credential to the public visitor browser, and never derive device, organization, or tenant authority from a public QR, header, query parameter, or local storage.
 
 ## HTTP contract
 
