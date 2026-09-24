@@ -19,6 +19,8 @@ For a change that crosses service boundaries, start with the [platform contract]
 
 For QRIS, payment webhooks, invoice reconciliation, or payment-event migration, then read the [payment-event contract](arnatech-payment-events/references/event-contract.md). Payment Router owns provider webhook ingress, Commerce owns invoice/order/entitlement state, and Pulsar carries versioned, idempotently processed payment facts.
 
+For an implementation-ready guide to QR login, manual-code fallback, silent refresh, local kiosk logout, and account-dashboard revocation, read [Kiosk Device Login](KIOSK_DEVICE_LOGIN.md).
+
 ### Repository map
 
 | Area | Read to understand | AI skill folder |
