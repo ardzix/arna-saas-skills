@@ -1,0 +1,4 @@
+interface:
+  display_name: "Arnatech Deployment"
+  short_description: "Jenkins, Docker agents, and verified Swarm releases"
+  default_prompt: "Use $arnatech-deploy to prepare or troubleshoot an Arnatech release with migration, verification, and rollback evidence."
