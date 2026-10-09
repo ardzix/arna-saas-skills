@@ -19,3 +19,5 @@ Treat these as established platform decisions:
 When a proposed change alters a product policy—such as entitlement scope, tenant ownership, data retention, or migration cutover—state the concrete alternatives and a recommendation, then ask the user to choose. Security validation and tenant isolation are not optional trade-offs.
 
 For payment work, also read [the payment-event contract](../arnatech-payment-events/references/event-contract.md). For a single backend or frontend implementation, use `arnatech-service` or `arnatech-web-sso` alongside this skill.
+
+For Jenkins, Docker agents, runtime configuration, releases or rollback, also use [arnatech-deploy](../arnatech-deploy/SKILL.md). Its SOP defines release gates and evidence; deployment settings stay service/environment scoped, while tenant policy remains with the authoritative backend owners.

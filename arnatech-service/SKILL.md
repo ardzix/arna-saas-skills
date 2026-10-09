@@ -18,3 +18,5 @@ Use Commerce runtime entitlements for package-controlled behavior. Store File Ma
 For new APIs, use `/api/v1`, a stable OpenAPI contract, request IDs, pagination where applicable, and the standard error envelope. Maintain an adapter or compatibility window for an existing legacy route. Add authorization, cross-tenant, idempotency, migration, and dependency-failure tests in proportion to the change.
 
 Follow the existing deployment target only after checking the actual runtime command, service port, health endpoints, secrets, and rollback behavior. Do not deploy or mutate production merely because the implementation is ready.
+
+For pipeline, Docker, migration rollout, runtime-secret delivery or production troubleshooting work, use [arnatech-deploy](../arnatech-deploy/SKILL.md). Validate enabled integration groups, gate rollout on a successful one-off migration, and verify the exact digest and configuration of each changed role. Do not repair a configuration mistake by automatically rewriting database roles or grants.

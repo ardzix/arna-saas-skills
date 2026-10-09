@@ -63,6 +63,8 @@ Include OpenAPI, bounded timeouts, idempotency on harmful retries, and explicit 
 
 ## Delivery baseline
 
-Use a pinned Docker runtime, immutable image tags, external secrets, health checks, resource limits, a rolling update and rollback policy on the production overlay network. Do not use an image-embedded secret, delete/recreate a healthy service for routine updates, or rely solely on `latest`.
+Use a pinned Docker runtime, immutable image tags resolved to registry digests, external secrets, health checks, resource limits, a rolling update and rollback policy on the existing production overlay network. Do not use an image-embedded secret, delete/recreate a healthy service for routine updates, or rely solely on `latest`.
 
-Known implementation gaps to account for in a migration plan: services have mixed Django/Python versions and health-route conventions; File Manager's Jenkins port target does not match its Gunicorn port; Business Hub only builds its image; SSO lacks the other repositories' Jenkins deployment artifact.
+Follow the [Jenkins/Swarm release SOP](../../arnatech-deploy/references/jenkins-swarm-sop.md) and [containerized agent SOP](../../arnatech-deploy/references/jenkins-agent-sop.md). Test the exact commit, validate enabled configuration, gate rollout on migration success, verify every changed runtime role and relevant public/authenticated path, and record release/recovery evidence. Keep tenant policies in backend-owned data; a new tenant must not require infrastructure secrets or a per-tenant Vercel configuration entry.
+
+Discover legacy drift before adapting a pipeline: framework/tool versions, health routes, internal listening/proxy ports, build-only versus deploy jobs, and inline versus repository-owned Jenkins definitions. Record observed gaps and a compatibility plan; do not treat historical implementation issues as current facts without checking source/runtime. Reconcile runtime hotfixes with durable configuration so a later pipeline release preserves them.

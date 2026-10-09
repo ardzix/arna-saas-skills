@@ -1,0 +1,69 @@
+# Copy into a service release record; keep secrets and customer data out.
+# An empty outcome is unverified. Use pass/fail/skipped/pending with evidence.
+release:
+  id: ""
+  requested_scope: ""
+  authorization_reference: ""
+  started_at_utc: ""
+  finished_at_utc: ""
+  status: "prepared" # prepared/published/deployed/verified/failed/rolled-back
+actors:
+  service_maintainer: ""
+  platform_operator: ""
+  release_operator: ""
+source:
+  repository: ""
+  branch: ""
+  commit_full: ""
+  related_releases: [] # repository, commit, deployment URL/state
+jenkins:
+  job_url: ""
+  build_number: ""
+  agent_node: ""
+  agent_image_digest_or_id: ""
+  deploy_enabled: false
+  deploy_serialization: "" # lock/reference for jobs sharing this target
+target:
+  manager_inventory_reference: ""
+  stack: ""
+  overlay: ""
+  public_domains: []
+artifact:
+  registry_repository: ""
+  tag: ""
+  digest: ""
+  platforms: []
+  build_cloud_or_fallback: ""
+configuration:
+  source_of_truth_reference: "" # credential ID/revision, never contents
+  credential_references: []
+  manifest_commit: ""
+  enabled_integrations: []
+  hotfix_reconciled: null # true/false/not-applicable
+migration:
+  compatibility_and_recovery: ""
+  backup_reference_if_required: ""
+  task_id: ""
+  exit_code: null
+  outcome: ""
+gates:
+  source_and_tests: {outcome: "", evidence: ""}
+  agent_and_manager: {outcome: "", evidence: ""}
+  runtime_validation: {outcome: "", evidence: ""}
+  image_publication: {outcome: "", evidence: ""}
+  rollout: {outcome: "", evidence: ""}
+  internal_health: {outcome: "", evidence: ""}
+  public_routes: {outcome: "", evidence: ""}
+  authentication_and_tenant_scope: {outcome: "", evidence: ""}
+  worker_or_event_progress: {outcome: "", evidence: ""}
+services: [] # name, desired/running replicas, previous/current digest/config refs
+probes: [] # UTC time, target/path, expected/actual status+semantics, evidence
+recovery:
+  requested: false
+  previous_release_reference: ""
+  outcome: ""
+  verified_digest_and_config: ""
+cleanup:
+  transient_tasks_and_credential_files: ""
+  rollback_artifacts_retained: ""
+remaining_actions: [] # action, responsible owner, blocker or next step
