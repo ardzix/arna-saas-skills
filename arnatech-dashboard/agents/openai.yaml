@@ -1,0 +1,4 @@
+interface:
+  display_name: "Arnatech Dashboard"
+  short_description: "Apply the approved BNK dashboard UI/UX standard"
+  default_prompt: "Use $arnatech-dashboard to implement or review this dashboard using the approved BNK patterns, preserving the product's workflows and access contracts."

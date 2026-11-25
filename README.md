@@ -5,7 +5,7 @@ This repository serves two purposes:
 1. **AI agent skills and reference context** for agents that design, review, or change Arnatech services.
 2. **Human documentation** for engineers and product owners making cross-service architecture decisions.
 
-It provides the cross-service architecture contract and reusable deployment SOP. Service source code, OpenAPI specifications, environment inventories, credentials and release records remain owned by their respective services/operators.
+It provides the cross-service architecture contract, reusable deployment SOP, and dashboard UI/UX standard based on the approved BNK implementation. Service source code, OpenAPI specifications, environment inventories, credentials and release records remain owned by their respective services/operators.
 
 ## Read as human documentation
 
@@ -28,6 +28,7 @@ For CI/CD, runtime configuration, agent repair or release recovery, read the [Je
 | Cross-service architecture, tenancy, SSO, devices | [Platform contract](arnatech-platform/references/platform-contract.md) | `arnatech-platform` |
 | Backend APIs, workers, and service integration | [Service skill](arnatech-service/SKILL.md) | `arnatech-service` |
 | Web frontends, BFFs, SSO, and public routes | [Web SSO skill](arnatech-web-sso/SKILL.md) | `arnatech-web-sso` |
+| Authenticated dashboard UI/UX, navigation, themes, and data states | [Dashboard skill](arnatech-dashboard/SKILL.md) and [BNK baseline](arnatech-dashboard/references/bnk-baseline.md) | `arnatech-dashboard` |
 | QRIS/Xendit, Commerce, Payment Router, and Pulsar | [Payment-event contract](arnatech-payment-events/references/event-contract.md) | `arnatech-payment-events` |
 | Jenkins CI/CD, Docker agents, Swarm, configuration and rollback | [Release SOP](arnatech-deploy/references/jenkins-swarm-sop.md) | `arnatech-deploy` |
 
@@ -89,6 +90,9 @@ Add a backend API that uses tenant context and Commerce.
 
 $arnatech-web-sso
 Implement a dashboard with central SSO.
+
+$arnatech-dashboard
+Build or review a business dashboard using the approved BNK UI/UX standard.
 
 $arnatech-payment-events
 Design a QRIS flow and an idempotent Pulsar consumer.
