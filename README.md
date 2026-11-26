@@ -25,6 +25,7 @@ For CI/CD, runtime configuration, agent repair or release recovery, read the [Je
 
 | Area | Read to understand | AI skill folder |
 | --- | --- | --- |
+| Project PIC, adaptive agent teams, seniority, ownership, and delivery | [Team PIC skill](arnatech-team-pic/SKILL.md) | `arnatech-team-pic` |
 | Cross-service architecture, tenancy, SSO, devices | [Platform contract](arnatech-platform/references/platform-contract.md) | `arnatech-platform` |
 | Backend APIs, workers, and service integration | [Service skill](arnatech-service/SKILL.md) | `arnatech-service` |
 | Web frontends, BFFs, SSO, and public routes | [Web SSO skill](arnatech-web-sso/SKILL.md) | `arnatech-web-sso` |
@@ -82,6 +83,9 @@ cp -R /tmp/arna-saas-skills/arnatech-* "$skills_path/"
 Use an explicit invocation for important work:
 
 ```text
+$arnatech-team-pic
+Lead this project and form an agent team sized and graded for its scope, deadline, and risk.
+
 $arnatech-platform
 Design the tenant and SSO contract for a new service.
 

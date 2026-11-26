@@ -1,0 +1,4 @@
+interface:
+  display_name: "Arnatech Team PIC"
+  short_description: "Lead adaptive agent teams for project delivery"
+  default_prompt: "Use $arnatech-team-pic to lead this project and organize an agent team with size, seniority, responsibilities, and supported models suited to its needs."
